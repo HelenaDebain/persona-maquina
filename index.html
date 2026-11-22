@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>¿Persona o máquina?</title>
+<style>
+  body { margin: 0; font-family: Georgia, "Times New Roman", serif; background: #f6f7f8; color: #1c2733; }
+  main { max-width: 720px; margin: 0 auto; padding: 32px 20px 60px; }
+  h1 { font-size: 2rem; margin: 0 0 4px; }
+  .sub { color: #5a6675; margin: 0 0 24px; }
+  .barra { height: 3px; width: 64px; background: #c9a84c; margin: 12px 0 28px; }
+  .tarjeta { background: #fff; border: 1px solid #dde3ea; border-radius: 10px; padding: 24px; }
+  .etiqueta { font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; color: #0079a0; margin: 0 0 6px; }
+  .situacion { margin: 0 0 20px; color: #3a4654; }
+  .respuesta { font-size: 1.25rem; line-height: 1.5; margin: 0 0 24px; padding-left: 16px; border-left: 3px solid #0079a0; }
+  .opcion { display: block; width: 100%; text-align: left; font-size: 1.15rem; line-height: 1.5; margin: 0 0 14px; padding: 16px 18px; color: #1c2733; border: 2px solid #dde3ea; }
+  .opcion:hover, .opcion:focus { background: #f0f6f8; color: #1c2733; border-color: #0079a0; }
+  .opcion.persona { border-color: #0079a0; background: #f0f6f8; }
+  .opcion.elegida { outline: 3px solid #c9a84c; }
+  .opcion[disabled] { cursor: default; }
+  .letra { display: block; font-size: .8rem; letter-spacing: .08em; color: #0079a0; margin-bottom: 4px; }
+  .botones { display: flex; gap: 12px; flex-wrap: wrap; }
+  button { font: inherit; font-size: 1.05rem; padding: 12px 22px; border-radius: 8px; border: 2px solid #0079a0; background: #fff; color: #0079a0; cursor: pointer; }
+  button:hover, button:focus { background: #0079a0; color: #fff; }
+  button.principal { background: #0079a0; color: #fff; }
+  .resultado { margin-top: 20px; padding: 16px; border-radius: 8px; background: #f0f6f8; }
+  .resultado strong { display: block; margin-bottom: 6px; }
+  .progreso { color: #5a6675; margin: 0 0 14px; }
+  .final { font-size: 2.4rem; color: #0079a0; margin: 8px 0; }
+  ul { padding-left: 20px; }
+  li { margin-bottom: 8px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>¿Persona o máquina?</h1>
+  <p class="sub">Dos respuestas a la misma situación. Una la escribió una persona. ¿Cuál?</p>
+  <div class="barra"></div>
+  <div id="juego"></div>
+</main>
+
+<script>
+/* ============================================================
+   EL CONTENIDO DEL JUEGO ESTÁ AQUÍ.
+   Cada caso tiene cuatro datos:
+     situacion:   lo que se pidió responder
+     persona:     la respuesta escrita por una persona, sin IA
+     maquina:     la respuesta escrita por una IA
+     explicacion: lo que se enseña después de elegir
+   Para cambiar el juego solo hay que cambiar estos textos.
+   Los casos cuya respuesta de persona siga diciendo
+   «ESCRIBE AQUÍ» no salen en el juego.
+   ============================================================ */
+const PENDIENTE = "ESCRIBE AQUÍ";
+const CASOS = [
+  {
+    situacion: "Una clienta cancela la cita media hora antes. Es la tercera vez. ¿Qué le contestas?",
+    persona: "ESCRIBE AQUÍ TU RESPUESTA DE PERSONA, SIN IA.",
+    maquina: "Lamentamos que no pueda acudir a su cita. Le recordamos que las cancelaciones deben comunicarse con al menos 24 horas de antelación. Quedamos a su disposición para reprogramarla cuando le resulte conveniente.",
+    explicacion: "La otra la escribió una IA sin ninguna instrucción: frases largas, tono de comunicado y ni una palabra que se diría en voz alta."
+  },
+  {
+    situacion: "Un padre escribe a la academia: «Lleva dos clases, ¿ya habla inglés?».",
+    persona: "ESCRIBE AQUÍ TU RESPUESTA DE PERSONA, SIN IA.",
+    maquina: "Todavía no, pero ya dice «hello» sin esconderse detrás de la mochila, que para dos clases no está nada mal. Deme hasta Navidad y hablamos.",
+    explicacion: "La otra la escribió una IA con esta instrucción: «responde como una persona real de España, en una o dos frases, con naturalidad y algo de humor, sin fórmulas de cortesía y sin palabras de comunicado». Lo que la hace parecer una persona es lo que alguien le pidió."
+  },
+  {
+    situacion: "El cliente lee el presupuesto y dice: «Me parece un poco alto, a ver qué se puede hacer».",
+    persona: "ESCRIBE AQUÍ TU RESPUESTA DE PERSONA, SIN IA.",
+    maquina: "Se puede hacer más barato, claro, quitando cosas. Dígame de cuáles prescinde y se lo recalculo esta tarde.",
+    explicacion: "La otra la escribió una IA con esta instrucción: «responde como una persona real de España, en una o dos frases, con naturalidad y algo de humor, sin fórmulas de cortesía y sin palabras de comunicado». Lo que la hace parecer una persona es lo que alguien le pidió."
+  },
+  {
+    situacion: "Convierte «hemos perdido dinero» en una frase para la nota de prensa.",
+    persona: "ESCRIBE AQUÍ TU RESPUESTA DE PERSONA, SIN IA.",
+    maquina: "La compañía ha registrado un resultado inferior a las previsiones en un ejercicio marcado por un entorno desafiante, y afronta el próximo periodo con una hoja de ruta orientada a recuperar la senda del crecimiento.",
+    explicacion: "La otra la escribió una IA sin ninguna instrucción: frases largas, tono de comunicado y ni una palabra que se diría en voz alta."
+  },
+  {
+    situacion: "Biografía de Instagram de alguien que hace de todo.",
+    persona: "ESCRIBE AQUÍ TU RESPUESTA DE PERSONA, SIN IA.",
+    maquina: "Comunico, escribo, grabo, edito y a veces hasta duermo. Cuéntame qué necesitas y vemos.",
+    explicacion: "La otra la escribió una IA con esta instrucción: «responde como una persona real de España, en una o dos frases, con naturalidad y algo de humor, sin fórmulas de cortesía y sin palabras de comunicado». Lo que la hace parecer una persona es lo que alguien le pidió."
+  },
+  {
+    situacion: "Titular para un empate a cero en el que no pasó nada.",
+    persona: "ESCRIBE AQUÍ TU RESPUESTA DE PERSONA, SIN IA.",
+    maquina: "Noventa minutos, cero goles y un bocadillo de tortilla que fue lo mejor de la tarde.",
+    explicacion: "La otra la escribió una IA con esta instrucción: «responde como una persona real de España, en una o dos frases, con naturalidad y algo de humor, sin fórmulas de cortesía y sin palabras de comunicado». Lo que la hace parecer una persona es lo que alguien le pidió."
+  },
+  {
+    situacion: "Te llega un correo que empieza por «Según lo hablado» y no recuerdas haber hablado nada. Contesta.",
+    persona: "ESCRIBE AQUÍ TU RESPUESTA DE PERSONA, SIN IA.",
+    maquina: "Perfecto, gracias. Para no equivocarme, ¿me recuerdas en dos líneas en qué quedamos? Últimamente hablo con demasiada gente.",
+    explicacion: "La otra la escribió una IA con esta instrucción: «responde como una persona real de España, en una o dos frases, con naturalidad y algo de humor, sin fórmulas de cortesía y sin palabras de comunicado». Lo que la hace parecer una persona es lo que alguien le pidió."
+  },
+  {
+    situacion: "Un alumno explica por qué no ha entregado el trabajo.",
+    persona: "ESCRIBE AQUÍ TU RESPUESTA DE PERSONA, SIN IA.",
+    maquina: "Lo tenía terminado, pero el ordenador decidió actualizarse justo anoche y esta mañana ya no era el mismo. Ni él ni yo.",
+    explicacion: "La otra la escribió una IA con esta instrucción: «responde como una persona real de España, en una o dos frases, con naturalidad y algo de humor, sin fórmulas de cortesía y sin palabras de comunicado». Lo que la hace parecer una persona es lo que alguien le pidió."
+  },
+  {
+    situacion: "Cuarto aviso a un cliente de que sigue faltando un documento.",
+    persona: "ESCRIBE AQUÍ TU RESPUESTA DE PERSONA, SIN IA.",
+    maquina: "Estimado cliente: le recordamos que seguimos a la espera de la documentación solicitada. Le agradeceríamos que nos la hiciera llegar a la mayor brevedad posible para poder continuar con la tramitación de su expediente. Quedamos a su disposición.",
+    explicacion: "La otra la escribió una IA sin ninguna instrucción: frases largas, tono de comunicado y ni una palabra que se diría en voz alta."
+  },
+  {
+    situacion: "En una entrevista: «¿Por qué quieres trabajar con nosotros?».",
+    persona: "ESCRIBE AQUÍ TU RESPUESTA DE PERSONA, SIN IA.",
+    maquina: "Porque llevo meses viendo lo que hacéis y cada vez pienso lo mismo: ahí me habría gustado estar a mí.",
+    explicacion: "La otra la escribió una IA con esta instrucción: «responde como una persona real de España, en una o dos frases, con naturalidad y algo de humor, sin fórmulas de cortesía y sin palabras de comunicado». Lo que la hace parecer una persona es lo que alguien le pidió."
+  },
+  {
+    situacion: "Reseña de una estrella a un hotel de playa: «Había peces en el mar y asustaron a mis hijos». Responde como el hotel.",
+    persona: "ESCRIBE AQUÍ TU RESPUESTA DE PERSONA, SIN IA.",
+    maquina: "Estimado huésped: lamentamos sinceramente que su experiencia no haya estado a la altura de sus expectativas. Le informamos de que la presencia de fauna marina es habitual en el entorno natural del establecimiento. Trasladaremos sus comentarios al equipo.",
+    explicacion: "La otra la escribió una IA sin ninguna instrucción: frases largas, tono de comunicado y ni una palabra que se diría en voz alta."
+  },
+  {
+    situacion: "Reseña de una estrella a un hotel en España: «Había demasiados españoles. El recepcionista hablaba español y la comida era española». Responde como el hotel.",
+    persona: "ESCRIBE AQUÍ TU RESPUESTA DE PERSONA, SIN IA.",
+    maquina: "Tiene usted toda la razón y pedimos disculpas: llevamos años intentando solucionarlo, pero siguen viniendo. La próxima vez le avisamos antes de que cruce la frontera.",
+    explicacion: "La otra la escribió una IA con esta instrucción: «responde como una persona real de España, en una o dos frases, con naturalidad y algo de humor, sin fórmulas de cortesía y sin palabras de comunicado». Lo que la hace parecer una persona es lo que alguien le pidió."
+  }
+];
+
+/* ============================================================
+   A PARTIR DE AQUÍ, EL FUNCIONAMIENTO DEL JUEGO.
+   ============================================================ */
+let orden = [];
+let actual = 0;
+let aciertos = 0;
+let fallos = [];
+const zona = document.getElementById("juego");
+
+function barajar(lista) {
+  const copia = lista.slice();
+  for (let i = copia.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copia[i], copia[j]] = [copia[j], copia[i]];
+  }
+  return copia;
+}
+
+function texto(etiqueta, clase, contenido) {
+  const e = document.createElement(etiqueta);
+  if (clase) e.className = clase;
+  e.textContent = contenido;
+  return e;
+}
+
+function empezar() {
+  const listos = CASOS.filter(function (c) { return c.persona.indexOf(PENDIENTE) === -1; });
+  zona.innerHTML = "";
+  if (listos.length === 0) {
+    const aviso = document.createElement("div");
+    aviso.className = "tarjeta";
+    aviso.appendChild(texto("p", "", "Todavía no hay ningún caso con respuesta de persona. Escribe al menos una en la lista de casos y vuelve a cargar la página."));
+    zona.appendChild(aviso);
+    return;
+  }
+  orden = barajar(listos);
+  actual = 0;
+  aciertos = 0;
+  fallos = [];
+  mostrarCaso();
+}
+
+function mostrarCaso() {
+  const caso = orden[actual];
+  zona.innerHTML = "";
+  zona.appendChild(texto("p", "progreso", "Caso " + (actual + 1) + " de " + orden.length + " · Aciertos: " + aciertos));
+  const tarjeta = document.createElement("div");
+  tarjeta.className = "tarjeta";
+  tarjeta.appendChild(texto("p", "etiqueta", "Situación"));
+  tarjeta.appendChild(texto("p", "situacion", caso.situacion));
+  tarjeta.appendChild(texto("p", "etiqueta", "¿Cuál escribió una persona?"));
+  const opciones = barajar([
+    { autor: "persona", respuesta: caso.persona },
+    { autor: "maquina", respuesta: caso.maquina }
+  ]);
+  const botones = [];
+  opciones.forEach(function (opcion, i) {
+    const b = document.createElement("button");
+    b.className = "opcion";
+    b.appendChild(texto("span", "letra", i === 0 ? "RESPUESTA A" : "RESPUESTA B"));
+    b.appendChild(texto("span", "", opcion.respuesta));
+    b.onclick = function () { responder(opcion.autor, b, opciones, botones, tarjeta); };
+    botones.push(b);
+    tarjeta.appendChild(b);
+  });
+  zona.appendChild(tarjeta);
+}
+
+function responder(eleccion, pulsado, opciones, botones, tarjeta) {
+  const caso = orden[actual];
+  const acierto = eleccion === "persona";
+  if (acierto) { aciertos++; } else { fallos.push(caso); }
+  botones.forEach(function (b, i) {
+    b.disabled = true;
+    if (opciones[i].autor === "persona") { b.className = "opcion persona"; }
+  });
+  pulsado.className = pulsado.className + " elegida";
+  const caja = document.createElement("div");
+  caja.className = "resultado";
+  caja.appendChild(texto("strong", "", acierto ? "Has acertado: esa es la de la persona." : "Esa era la de la máquina. La de la persona es la que queda marcada."));
+  caja.appendChild(texto("span", "", caso.explicacion));
+  tarjeta.appendChild(caja);
+  const siguiente = texto("button", "principal", actual + 1 < orden.length ? "Siguiente" : "Ver resultado");
+  siguiente.style.marginTop = "16px";
+  siguiente.onclick = function () {
+    actual++;
+    if (actual < orden.length) { mostrarCaso(); } else { mostrarFinal(); }
+  };
+  tarjeta.appendChild(siguiente);
+}
+
+function veredicto() {
+  const parte = aciertos / orden.length;
+  if (parte === 1) return "No hay máquina que te engañe. De momento.";
+  if (parte >= 0.75) return "Buen ojo. Alguna se te ha colado.";
+  if (parte >= 0.5) return "Mitad y mitad: lo mismo que tirando una moneda.";
+  return "Te han engañado más veces de las que has acertado. Tranquilidad, le pasa a casi todo el mundo.";
+}
+
+function mostrarFinal() {
+  zona.innerHTML = "";
+  const tarjeta = document.createElement("div");
+  tarjeta.className = "tarjeta";
+  tarjeta.appendChild(texto("p", "etiqueta", "Resultado"));
+  tarjeta.appendChild(texto("p", "final", aciertos + " de " + orden.length));
+  tarjeta.appendChild(texto("p", "", veredicto()));
+  if (fallos.length > 0) {
+    tarjeta.appendChild(texto("p", "", "Tomaste por persona a la máquina en estas respuestas:"));
+    const lista = document.createElement("ul");
+    fallos.forEach(function (c) { lista.appendChild(texto("li", "", "«" + c.maquina + "»")); });
+    tarjeta.appendChild(lista);
+  }
+  const otra = texto("button", "principal", "Jugar otra vez");
+  otra.onclick = empezar;
+  tarjeta.appendChild(otra);
+  zona.appendChild(tarjeta);
+}
+
+empezar();
+</script>
+</body>
+</html>
