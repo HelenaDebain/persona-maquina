@@ -241,11 +241,12 @@ function empezar() {
   mostrarCaso();
 }
 
-function explicacion(caso) {
+function explicacion(caso, acierto) {
+  const cual = acierto ? "La otra" : "La que has elegido";
   if (caso.tipo === "fabrica") {
-    return "La otra la escribió una IA sin ninguna instrucción. Así responde cuando nadie le dice cómo.";
+    return cual + " la escribió una IA sin ninguna instrucción. Así responde cuando nadie le dice cómo.";
   }
-  return "La otra la escribió una IA con esta instrucción: «" + CONSIGNA + "». Lo que la hace parecer una persona es lo que alguien le pidió.";
+  return cual + " la escribió una IA con esta instrucción: «" + CONSIGNA + "». Lo que la hace parecer una persona es lo que alguien le pidió.";
 }
 
 function mostrarCaso() {
@@ -261,7 +262,8 @@ function mostrarCaso() {
   const puntos = crea("span", "puntos");
   const cifraPuntos = crea("b", "", String(aciertos));
   puntos.appendChild(cifraPuntos);
-  puntos.appendChild(crea("span", "", " aciertos"));
+  const palabraPuntos = crea("span", "", aciertos === 1 ? " acierto" : " aciertos");
+  puntos.appendChild(palabraPuntos);
   marcador.appendChild(puntos);
   zona.appendChild(marcador);
 
@@ -279,18 +281,19 @@ function mostrarCaso() {
     b.appendChild(crea("span", "autor", opcion.autor === "persona" ? "Persona" : "Máquina"));
     b.appendChild(crea("span", "letra", i === 0 ? "RESPUESTA A" : "RESPUESTA B"));
     b.appendChild(crea("div", "", opcion.respuesta));
-    b.onclick = function () { responder(opcion.autor, b, opciones, botones, tarjeta, cifraPuntos, avance); };
+    b.onclick = function () { responder(opcion.autor, b, opciones, botones, tarjeta, cifraPuntos, avance, palabraPuntos); };
     botones.push(b);
     tarjeta.appendChild(b);
   });
   zona.appendChild(tarjeta);
 }
 
-function responder(eleccion, pulsado, opciones, botones, tarjeta, cifraPuntos, avance) {
+function responder(eleccion, pulsado, opciones, botones, tarjeta, cifraPuntos, avance, palabraPuntos) {
   const caso = orden[actual];
   const acierto = eleccion === "persona";
   if (acierto) { aciertos++; } else { fallos.push(caso); }
   cifraPuntos.textContent = String(aciertos);
+  palabraPuntos.textContent = aciertos === 1 ? " acierto" : " aciertos";
   avance.style.width = Math.round(((actual + 1) / orden.length) * 100) + "%";
   botones.forEach(function (b, i) {
     b.disabled = true;
@@ -298,7 +301,7 @@ function responder(eleccion, pulsado, opciones, botones, tarjeta, cifraPuntos, a
   });
   const caja = crea("div", acierto ? "resultado" : "resultado fallo");
   caja.appendChild(crea("strong", "", acierto ? "Has acertado." : "Te ha engañado la máquina."));
-  caja.appendChild(crea("span", "", explicacion(caso)));
+  caja.appendChild(crea("span", "", explicacion(caso, acierto)));
   tarjeta.appendChild(caja);
   const siguiente = crea("button", "principal", actual + 1 < orden.length ? "Siguiente" : "Ver el resultado");
   siguiente.onclick = function () {
@@ -335,7 +338,7 @@ function mostrarFinal() {
   }
   const cifra = crea("div", "cifra");
   cifra.appendChild(crea("b", "", aciertos + " de " + total));
-  cifra.appendChild(crea("span", "", "aciertos"));
+  cifra.appendChild(crea("span", "", aciertos === 1 ? "acierto" : "aciertos"));
   anillo.appendChild(cifra);
   t.appendChild(anillo);
   t.appendChild(crea("p", "veredicto", enganos === 0 ? "No hay máquina que te engañe. De momento." : "La máquina te ha engañado " + enganos + (enganos === 1 ? " vez." : " veces.")));
@@ -343,7 +346,7 @@ function mostrarFinal() {
   const f = cuenta("fabrica");
   const c = cuenta("consigna");
   const dos = crea("div", "dos");
-  [[f, "veces te engañó sin instrucciones"], [c, "veces te engañó con una consigna"]].forEach(function (par) {
+  [[f, "engaños sin instrucciones"], [c, "engaños con una consigna"]].forEach(function (par) {
     if (par[0].total === 0) return;
     const d = crea("div", "dato");
     d.appendChild(crea("b", "", par[0].enganos + " de " + par[0].total));
