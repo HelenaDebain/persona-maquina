@@ -56,73 +56,73 @@ const PENDIENTE = "ESCRIBE AQUÍ";
 const CASOS = [
   {
     situacion: "Una clienta cancela la cita media hora antes. Es la tercera vez. ¿Qué le contestas?",
-    persona: "ESCRIBE AQUÍ TU RESPUESTA DE PERSONA, SIN IA.",
+    persona: "Muchas gracias por avisarnos y siento que no pueda acudir, nuestra política de cancelación nos obliga a cargar la tarjeta que dejó cuando hizo la reserva, por deferencia hacia usted las dos últimas veces no procedimos al cargo pero esta vez tendremos que cargarle el 50% del importe total.",
     maquina: "Lamentamos que no pueda acudir a su cita. Le recordamos que las cancelaciones deben comunicarse con al menos 24 horas de antelación. Quedamos a su disposición para reprogramarla cuando le resulte conveniente.",
     explicacion: "La otra la escribió una IA sin ninguna instrucción: frases largas, tono de comunicado y ni una palabra que se diría en voz alta."
   },
   {
     situacion: "Un padre escribe a la academia: «Lleva dos clases, ¿ya habla inglés?».",
-    persona: "ESCRIBE AQUÍ TU RESPUESTA DE PERSONA, SIN IA.",
+    persona: "Estimado Sr. [Apellido], muchas gracias por su mensaje y su implicación, las evaluaciones se realizan mensualmente y se informa por escrito sobre la evolución y las áreas de mejora para que tanto alumnos como padres puedan ver el progreso, estamos convencidos que siguiendo el método de nuestra academia verá rápidamente una mejora de su nivel, si tiene cualquier otra duda o quiere más detalle sobre el método no dude en volver a contactarnos. Un saludo, Academia Fast Learning.",
     maquina: "Todavía no, pero ya dice «hello» sin esconderse detrás de la mochila, que para dos clases no está nada mal. Deme hasta Navidad y hablamos.",
     explicacion: "La otra la escribió una IA con esta instrucción: «responde como una persona real de España, en una o dos frases, con naturalidad y algo de humor, sin fórmulas de cortesía y sin palabras de comunicado». Lo que la hace parecer una persona es lo que alguien le pidió."
   },
   {
     situacion: "El cliente lee el presupuesto y dice: «Me parece un poco alto, a ver qué se puede hacer».",
-    persona: "ESCRIBE AQUÍ TU RESPUESTA DE PERSONA, SIN IA.",
+    persona: "Muchas gracias por su pronta respuesta, el presupuesto viene desglosado por conceptos, ¿hay alguno en particular que quiera revisar? Estaremos encantados/as de revisarlo según sus comentarios.",
     maquina: "Se puede hacer más barato, claro, quitando cosas. Dígame de cuáles prescinde y se lo recalculo esta tarde.",
     explicacion: "La otra la escribió una IA con esta instrucción: «responde como una persona real de España, en una o dos frases, con naturalidad y algo de humor, sin fórmulas de cortesía y sin palabras de comunicado». Lo que la hace parecer una persona es lo que alguien le pidió."
   },
   {
     situacion: "Convierte «hemos perdido dinero» en una frase para la nota de prensa.",
-    persona: "ESCRIBE AQUÍ TU RESPUESTA DE PERSONA, SIN IA.",
+    persona: "Aunque el balance anual ha sido negativo, el cuarto trimestre las ventas se han disparado un 2%",
     maquina: "La compañía ha registrado un resultado inferior a las previsiones en un ejercicio marcado por un entorno desafiante, y afronta el próximo periodo con una hoja de ruta orientada a recuperar la senda del crecimiento.",
     explicacion: "La otra la escribió una IA sin ninguna instrucción: frases largas, tono de comunicado y ni una palabra que se diría en voz alta."
   },
   {
     situacion: "Biografía de Instagram de alguien que hace de todo.",
-    persona: "ESCRIBE AQUÍ TU RESPUESTA DE PERSONA, SIN IA.",
+    persona: "Divulgador tecnológico, de moda y escritor que ayuda a las personas a crear su propia startup en cuestión de segundos. Desde sus inicios estuvo ligado a la medicina y siempre con una visión filantrópica del mundo, llegando a crear una ONG para la salvaguarda del medioambiente con tan solo 25 años.",
     maquina: "Comunico, escribo, grabo, edito y a veces hasta duermo. Cuéntame qué necesitas y vemos.",
     explicacion: "La otra la escribió una IA con esta instrucción: «responde como una persona real de España, en una o dos frases, con naturalidad y algo de humor, sin fórmulas de cortesía y sin palabras de comunicado». Lo que la hace parecer una persona es lo que alguien le pidió."
   },
   {
     situacion: "Titular para un empate a cero en el que no pasó nada.",
-    persona: "ESCRIBE AQUÍ TU RESPUESTA DE PERSONA, SIN IA.",
+    persona: "El esperado debut de Pepe en el partido del Hormiguillos contra Revoltosos que finalizó con empate a cero.",
     maquina: "Noventa minutos, cero goles y un bocadillo de tortilla que fue lo mejor de la tarde.",
     explicacion: "La otra la escribió una IA con esta instrucción: «responde como una persona real de España, en una o dos frases, con naturalidad y algo de humor, sin fórmulas de cortesía y sin palabras de comunicado». Lo que la hace parecer una persona es lo que alguien le pidió."
   },
   {
     situacion: "Te llega un correo que empieza por «Según lo hablado» y no recuerdas haber hablado nada. Contesta.",
-    persona: "ESCRIBE AQUÍ TU RESPUESTA DE PERSONA, SIN IA.",
+    persona: "Muchas gracias por su email, le agradeceríamos si pudiese concretar con quien estuvo en contacto, pues no nos consta en nuestros archivos ninguna conversación previa.",
     maquina: "Perfecto, gracias. Para no equivocarme, ¿me recuerdas en dos líneas en qué quedamos? Últimamente hablo con demasiada gente.",
     explicacion: "La otra la escribió una IA con esta instrucción: «responde como una persona real de España, en una o dos frases, con naturalidad y algo de humor, sin fórmulas de cortesía y sin palabras de comunicado». Lo que la hace parecer una persona es lo que alguien le pidió."
   },
   {
     situacion: "Un alumno explica por qué no ha entregado el trabajo.",
-    persona: "ESCRIBE AQUÍ TU RESPUESTA DE PERSONA, SIN IA.",
+    persona: "No he podido entregar el trabajo porque se fue la luz y solo tenia una copia en el ordenador.",
     maquina: "Lo tenía terminado, pero el ordenador decidió actualizarse justo anoche y esta mañana ya no era el mismo. Ni él ni yo.",
     explicacion: "La otra la escribió una IA con esta instrucción: «responde como una persona real de España, en una o dos frases, con naturalidad y algo de humor, sin fórmulas de cortesía y sin palabras de comunicado». Lo que la hace parecer una persona es lo que alguien le pidió."
   },
   {
     situacion: "Cuarto aviso a un cliente de que sigue faltando un documento.",
-    persona: "ESCRIBE AQUÍ TU RESPUESTA DE PERSONA, SIN IA.",
+    persona: "Nos ponemos en contacto con usted porque estábamos revisando la documentación para presentar mañana que termina el plazo y no nos consta que nos enviase el documento ya solicitado el pasado 1 de noviembre, le rogamos nos lo envíe lo antes posible.",
     maquina: "Estimado cliente: le recordamos que seguimos a la espera de la documentación solicitada. Le agradeceríamos que nos la hiciera llegar a la mayor brevedad posible para poder continuar con la tramitación de su expediente. Quedamos a su disposición.",
     explicacion: "La otra la escribió una IA sin ninguna instrucción: frases largas, tono de comunicado y ni una palabra que se diría en voz alta."
   },
   {
     situacion: "En una entrevista: «¿Por qué quieres trabajar con nosotros?».",
-    persona: "ESCRIBE AQUÍ TU RESPUESTA DE PERSONA, SIN IA.",
+    persona: "El sector de la moda siempre me ha interesado y ha sido una pasión para mí, creo que en esta empresa tan reputada además de trabajar en lo que más me apasiona tendría grandes oportunidades para aplicar mis conocimientos y crecer.",
     maquina: "Porque llevo meses viendo lo que hacéis y cada vez pienso lo mismo: ahí me habría gustado estar a mí.",
     explicacion: "La otra la escribió una IA con esta instrucción: «responde como una persona real de España, en una o dos frases, con naturalidad y algo de humor, sin fórmulas de cortesía y sin palabras de comunicado». Lo que la hace parecer una persona es lo que alguien le pidió."
   },
   {
     situacion: "Reseña de una estrella a un hotel de playa: «Había peces en el mar y asustaron a mis hijos». Responde como el hotel.",
-    persona: "ESCRIBE AQUÍ TU RESPUESTA DE PERSONA, SIN IA.",
+    persona: "Estimado cliente, lo primero agradecerle su tiempo en valorar nuestro hotel, la zona de playa está fuera de nuestro alcance, sin embargo hemos revisado las diez piscinas que nuestros estimados clientes pueden disfrutar en nuestro hotel y le confirmamos que cumplen con todas las medidas que regula la legislación. Esperamos que pese al percance haya disfrutados de nuestros 1.000 metros cuadrados que disponen tanto de las piscinas mencionadas como de 8 restaurantes temáticos y instalaciones deportivas donde se incluyen campo de golf, pistas de tenis y padel y las dos fantásticas embarcaciones dedicadas en exclusividad para nuestros clientes.",
     maquina: "Estimado huésped: lamentamos sinceramente que su experiencia no haya estado a la altura de sus expectativas. Le informamos de que la presencia de fauna marina es habitual en el entorno natural del establecimiento. Trasladaremos sus comentarios al equipo.",
     explicacion: "La otra la escribió una IA sin ninguna instrucción: frases largas, tono de comunicado y ni una palabra que se diría en voz alta."
   },
   {
     situacion: "Reseña de una estrella a un hotel en España: «Había demasiados españoles. El recepcionista hablaba español y la comida era española». Responde como el hotel.",
-    persona: "ESCRIBE AQUÍ TU RESPUESTA DE PERSONA, SIN IA.",
+    persona: "Estimado cliente: Gracias por compartir su opinión sobre nuestro Hotel. Tomamos nota de sus comentarios. Nos alegra que el trato del personal y otros servicios hayan sido de su agrado. Saludos cordiales.",
     maquina: "Tiene usted toda la razón y pedimos disculpas: llevamos años intentando solucionarlo, pero siguen viniendo. La próxima vez le avisamos antes de que cruce la frontera.",
     explicacion: "La otra la escribió una IA con esta instrucción: «responde como una persona real de España, en una o dos frases, con naturalidad y algo de humor, sin fórmulas de cortesía y sin palabras de comunicado». Lo que la hace parecer una persona es lo que alguien le pidió."
   }
