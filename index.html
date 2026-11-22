@@ -5,132 +5,182 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>¿Persona o máquina?</title>
 <style>
-  body { margin: 0; font-family: Georgia, "Times New Roman", serif; background: #f6f7f8; color: #1c2733; }
-  main { max-width: 720px; margin: 0 auto; padding: 32px 20px 60px; }
-  h1 { font-size: 2rem; margin: 0 0 4px; }
-  .sub { color: #5a6675; margin: 0 0 24px; }
-  .barra { height: 3px; width: 64px; background: #c9a84c; margin: 12px 0 28px; }
-  .tarjeta { background: #fff; border: 1px solid #dde3ea; border-radius: 10px; padding: 24px; }
-  .etiqueta { font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; color: #0079a0; margin: 0 0 6px; }
-  .situacion { margin: 0 0 20px; color: #3a4654; }
-  .respuesta { font-size: 1.25rem; line-height: 1.5; margin: 0 0 24px; padding-left: 16px; border-left: 3px solid #0079a0; }
-  .opcion { display: block; width: 100%; text-align: left; font-size: 1.15rem; line-height: 1.5; margin: 0 0 14px; padding: 16px 18px; color: #1c2733; border: 2px solid #dde3ea; }
-  .opcion:hover, .opcion:focus { background: #f0f6f8; color: #1c2733; border-color: #0079a0; }
-  .opcion.persona { border-color: #0079a0; background: #f0f6f8; }
-  .opcion.elegida { outline: 3px solid #c9a84c; }
+  :root { --acento: #0079a0; --oro: #c9a84c; --tinta: #1c2733; --suave: #5a6675; --linea: #dde3ea; --fondo: #f6f8f9; --lavado: #e9f4f7; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: Georgia, "Times New Roman", serif; color: var(--tinta); background: var(--fondo);
+         background-image: radial-gradient(circle at 12% 8%, #e3f1f5 0, transparent 38%), radial-gradient(circle at 92% 92%, #f7efd9 0, transparent 34%); min-height: 100vh; }
+  main { max-width: 780px; margin: 0 auto; padding: 36px 20px 70px; }
+  header { text-align: center; margin-bottom: 26px; }
+  .sello { display: inline-block; font-family: Arial, Helvetica, sans-serif; font-size: .72rem; letter-spacing: .18em; text-transform: uppercase; color: var(--acento); border: 1px solid var(--acento); border-radius: 999px; padding: 5px 14px; margin-bottom: 14px; background: #fff; }
+  h1 { font-size: clamp(2.2rem, 7vw, 3.4rem); line-height: 1.05; margin: 0; letter-spacing: -.01em; }
+  h1 span { color: var(--acento); font-style: italic; }
+  .sub { color: var(--suave); margin: 10px 0 0; font-size: 1.05rem; }
+  .filete { height: 3px; width: 70px; background: var(--oro); margin: 18px auto 0; border-radius: 2px; }
+  .tarjeta { background: #fff; border: 1px solid var(--linea); border-radius: 16px; padding: 26px; box-shadow: 0 10px 30px rgba(28, 39, 51, .07); animation: entra .35s ease both; }
+  @keyframes entra { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+  .etiqueta { font-family: Arial, Helvetica, sans-serif; font-size: .74rem; letter-spacing: .12em; text-transform: uppercase; color: var(--acento); margin: 0 0 6px; }
+  .situacion { margin: 0 0 20px; font-size: 1.12rem; line-height: 1.45; }
+  .marcador { display: flex; align-items: center; gap: 14px; margin: 0 0 14px; font-family: Arial, Helvetica, sans-serif; font-size: .9rem; color: var(--suave); }
+  .pista { flex: 1; height: 8px; background: var(--linea); border-radius: 999px; overflow: hidden; }
+  .avance { height: 100%; width: 0; background: linear-gradient(90deg, var(--acento), #3fa9c9); border-radius: 999px; transition: width .4s ease; }
+  .puntos { background: #fff; border: 1px solid var(--linea); border-radius: 999px; padding: 4px 12px; color: var(--tinta); }
+  .puntos b { color: var(--acento); }
+  button { font: inherit; cursor: pointer; }
+  .opcion { display: block; width: 100%; text-align: left; font-size: 1.1rem; line-height: 1.5; margin: 0 0 14px; padding: 16px 18px; color: var(--tinta); background: #fff; border: 2px solid var(--linea); border-radius: 12px; transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease; }
+  .opcion:hover:not([disabled]), .opcion:focus-visible:not([disabled]) { border-color: var(--acento); transform: translateY(-2px); box-shadow: 0 8px 18px rgba(0, 121, 160, .14); outline: none; }
   .opcion[disabled] { cursor: default; }
-  .letra { display: block; font-size: .8rem; letter-spacing: .08em; color: #0079a0; margin-bottom: 4px; }
-  .botones { display: flex; gap: 12px; flex-wrap: wrap; }
-  button { font: inherit; font-size: 1.05rem; padding: 12px 22px; border-radius: 8px; border: 2px solid #0079a0; background: #fff; color: #0079a0; cursor: pointer; }
-  button:hover, button:focus { background: #0079a0; color: #fff; }
-  button.principal { background: #0079a0; color: #fff; }
-  .resultado { margin-top: 20px; padding: 16px; border-radius: 8px; background: #f0f6f8; }
-  .resultado strong { display: block; margin-bottom: 6px; }
-  .progreso { color: #5a6675; margin: 0 0 14px; }
-  .final { font-size: 2.4rem; color: #0079a0; margin: 8px 0; }
-  ul { padding-left: 20px; }
-  li { margin-bottom: 8px; }
+  .letra { display: inline-block; font-family: Arial, Helvetica, sans-serif; font-size: .74rem; letter-spacing: .1em; color: #fff; background: var(--acento); border-radius: 999px; padding: 3px 10px; margin-bottom: 8px; }
+  .autor { display: none; float: right; font-family: Arial, Helvetica, sans-serif; font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; padding: 3px 10px; border-radius: 999px; }
+  .opcion.persona { border-color: var(--acento); background: var(--lavado); }
+  .opcion.maquina { border-color: var(--oro); background: #fbf6e8; }
+  .opcion.persona .autor, .opcion.maquina .autor { display: inline-block; }
+  .opcion.persona .autor { background: var(--acento); color: #fff; }
+  .opcion.maquina .autor { background: var(--oro); color: #fff; }
+  .opcion.elegida { box-shadow: 0 0 0 4px rgba(201, 168, 76, .35); }
+  .resultado { margin-top: 6px; padding: 16px 18px; border-radius: 12px; background: var(--lavado); border-left: 4px solid var(--acento); animation: entra .3s ease both; }
+  .resultado.fallo { background: #fbf6e8; border-left-color: var(--oro); }
+  .resultado strong { display: block; margin-bottom: 6px; font-size: 1.1rem; }
+  .principal { margin-top: 18px; font-size: 1.05rem; padding: 13px 26px; border-radius: 999px; border: 0; background: var(--acento); color: #fff; box-shadow: 0 6px 16px rgba(0, 121, 160, .25); transition: transform .15s ease; }
+  .principal:hover, .principal:focus-visible { transform: translateY(-2px); outline: none; }
+  .centro { text-align: center; }
+  .reglas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 22px 0 6px; }
+  .regla { background: var(--fondo); border-radius: 12px; padding: 14px; text-align: left; font-size: .98rem; line-height: 1.4; }
+  .regla b { display: block; font-size: 1.6rem; color: var(--acento); line-height: 1; margin-bottom: 6px; }
+  .anillo { width: 190px; height: 190px; margin: 6px auto 4px; position: relative; }
+  .anillo svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+  .anillo circle { fill: none; stroke-width: 12; }
+  .anillo .base { stroke: var(--linea); }
+  .anillo .valor { stroke: var(--acento); stroke-linecap: round; transition: stroke-dashoffset 1s ease; }
+  .anillo .cifra { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .anillo .cifra b { font-size: 2.6rem; line-height: 1; color: var(--tinta); }
+  .anillo .cifra span { font-family: Arial, Helvetica, sans-serif; font-size: .78rem; letter-spacing: .1em; text-transform: uppercase; color: var(--suave); margin-top: 4px; }
+  .veredicto { font-size: 1.15rem; margin: 10px 0 0; }
+  .dos { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0; }
+  .dato { background: var(--fondo); border-radius: 12px; padding: 16px; text-align: center; }
+  .dato b { display: block; font-size: 1.9rem; color: var(--acento); line-height: 1.1; }
+  .dato span { font-size: .95rem; color: var(--suave); }
+  .turing { margin-top: 22px; }
+  .turing h2 { font-size: 1.5rem; margin: 0 0 4px; }
+  .turing p { line-height: 1.55; margin: 12px 0 0; }
+  .sentencia { margin: 16px 0 0; padding: 16px 18px; border-radius: 12px; background: #fbf6e8; border-left: 4px solid var(--oro); font-size: 1.08rem; line-height: 1.5; }
+  .escala { margin: 18px 0 4px; }
+  .escala .barra { position: relative; height: 14px; border-radius: 999px; background: linear-gradient(90deg, var(--lavado) 0 30%, #f3e7c4 30% 100%); border: 1px solid var(--linea); }
+  .escala .liston { position: absolute; left: 30%; top: -7px; bottom: -7px; width: 2px; background: var(--tinta); }
+  .escala .tu { position: absolute; top: -9px; width: 18px; height: 18px; margin-left: -9px; border-radius: 50%; background: var(--acento); border: 3px solid #fff; box-shadow: 0 2px 6px rgba(0, 0, 0, .25); transition: left 1s ease; }
+  .escala .pies { display: flex; justify-content: space-between; font-family: Arial, Helvetica, sans-serif; font-size: .78rem; color: var(--suave); margin-top: 12px; }
+  .lista { padding-left: 20px; margin: 10px 0 0; }
+  .lista li { margin-bottom: 8px; line-height: 1.45; }
+  footer { text-align: center; color: var(--suave); font-family: Arial, Helvetica, sans-serif; font-size: .8rem; margin-top: 28px; }
+  @media (max-width: 560px) { .reglas, .dos { grid-template-columns: 1fr; } .tarjeta { padding: 20px; } }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
 </style>
 </head>
 <body>
 <main>
-  <h1>¿Persona o máquina?</h1>
-  <p class="sub">Dos respuestas a la misma situación. Una la escribió una persona. ¿Cuál?</p>
-  <div class="barra"></div>
+  <header>
+    <div class="sello">El juego de la imitación · 1950</div>
+    <h1>¿Persona o <span>máquina</span>?</h1>
+    <p class="sub">Dos respuestas a la misma situación. Una la escribió una persona. ¿Cuál?</p>
+    <div class="filete"></div>
+  </header>
   <div id="juego"></div>
+  <footer>Juego hecho con código pedido a una IA y publicado en GitHub Pages.</footer>
 </main>
 
 <script>
 /* ============================================================
    EL CONTENIDO DEL JUEGO ESTÁ AQUÍ.
    Cada caso tiene cuatro datos:
-     situacion:   lo que se pidió responder
-     persona:     la respuesta escrita por una persona, sin IA
-     maquina:     la respuesta escrita por una IA
-     explicacion: lo que se enseña después de elegir
+     situacion: lo que se pidió responder
+     persona:   la respuesta escrita por una persona, sin IA
+     maquina:   la respuesta escrita por una IA
+     tipo:      "fabrica" si la IA respondió sin instrucciones,
+                "consigna" si se le pidió que pareciera una persona
    Para cambiar el juego solo hay que cambiar estos textos.
    Los casos cuya respuesta de persona siga diciendo
    «ESCRIBE AQUÍ» no salen en el juego.
    ============================================================ */
 const PENDIENTE = "ESCRIBE AQUÍ";
+const CONSIGNA = "responde como una persona real de España, en una o dos frases, con naturalidad y algo de humor, sin fórmulas de cortesía y sin palabras de comunicado";
 const CASOS = [
   {
     situacion: "Una clienta cancela la cita media hora antes. Es la tercera vez. ¿Qué le contestas?",
     persona: "Muchas gracias por avisarnos y siento que no pueda acudir, nuestra política de cancelación nos obliga a cargar la tarjeta que dejó cuando hizo la reserva, por deferencia hacia usted las dos últimas veces no procedimos al cargo pero esta vez tendremos que cargarle el 50% del importe total.",
     maquina: "Lamentamos que no pueda acudir a su cita. Le recordamos que las cancelaciones deben comunicarse con al menos 24 horas de antelación. Quedamos a su disposición para reprogramarla cuando le resulte conveniente.",
-    explicacion: "La otra la escribió una IA sin ninguna instrucción: frases largas, tono de comunicado y ni una palabra que se diría en voz alta."
+    tipo: "fabrica"
   },
   {
     situacion: "Un padre escribe a la academia: «Lleva dos clases, ¿ya habla inglés?».",
     persona: "Estimado Sr. [Apellido], muchas gracias por su mensaje y su implicación, las evaluaciones se realizan mensualmente y se informa por escrito sobre la evolución y las áreas de mejora para que tanto alumnos como padres puedan ver el progreso, estamos convencidos que siguiendo el método de nuestra academia verá rápidamente una mejora de su nivel, si tiene cualquier otra duda o quiere más detalle sobre el método no dude en volver a contactarnos. Un saludo, Academia Fast Learning.",
     maquina: "Todavía no, pero ya dice «hello» sin esconderse detrás de la mochila, que para dos clases no está nada mal. Deme hasta Navidad y hablamos.",
-    explicacion: "La otra la escribió una IA con esta instrucción: «responde como una persona real de España, en una o dos frases, con naturalidad y algo de humor, sin fórmulas de cortesía y sin palabras de comunicado». Lo que la hace parecer una persona es lo que alguien le pidió."
+    tipo: "consigna"
   },
   {
     situacion: "El cliente lee el presupuesto y dice: «Me parece un poco alto, a ver qué se puede hacer».",
     persona: "Muchas gracias por su pronta respuesta, el presupuesto viene desglosado por conceptos, ¿hay alguno en particular que quiera revisar? Estaremos encantados/as de revisarlo según sus comentarios.",
     maquina: "Se puede hacer más barato, claro, quitando cosas. Dígame de cuáles prescinde y se lo recalculo esta tarde.",
-    explicacion: "La otra la escribió una IA con esta instrucción: «responde como una persona real de España, en una o dos frases, con naturalidad y algo de humor, sin fórmulas de cortesía y sin palabras de comunicado». Lo que la hace parecer una persona es lo que alguien le pidió."
+    tipo: "consigna"
   },
   {
     situacion: "Convierte «hemos perdido dinero» en una frase para la nota de prensa.",
     persona: "Aunque el balance anual ha sido negativo, el cuarto trimestre las ventas se han disparado un 2%",
     maquina: "La compañía ha registrado un resultado inferior a las previsiones en un ejercicio marcado por un entorno desafiante, y afronta el próximo periodo con una hoja de ruta orientada a recuperar la senda del crecimiento.",
-    explicacion: "La otra la escribió una IA sin ninguna instrucción: frases largas, tono de comunicado y ni una palabra que se diría en voz alta."
+    tipo: "fabrica"
   },
   {
     situacion: "Biografía de Instagram de alguien que hace de todo.",
     persona: "Divulgador tecnológico, de moda y escritor que ayuda a las personas a crear su propia startup en cuestión de segundos. Desde sus inicios estuvo ligado a la medicina y siempre con una visión filantrópica del mundo, llegando a crear una ONG para la salvaguarda del medioambiente con tan solo 25 años.",
     maquina: "Comunico, escribo, grabo, edito y a veces hasta duermo. Cuéntame qué necesitas y vemos.",
-    explicacion: "La otra la escribió una IA con esta instrucción: «responde como una persona real de España, en una o dos frases, con naturalidad y algo de humor, sin fórmulas de cortesía y sin palabras de comunicado». Lo que la hace parecer una persona es lo que alguien le pidió."
+    tipo: "consigna"
   },
   {
     situacion: "Titular para un empate a cero en el que no pasó nada.",
     persona: "El esperado debut de Pepe en el partido del Hormiguillos contra Revoltosos que finalizó con empate a cero.",
     maquina: "Noventa minutos, cero goles y un bocadillo de tortilla que fue lo mejor de la tarde.",
-    explicacion: "La otra la escribió una IA con esta instrucción: «responde como una persona real de España, en una o dos frases, con naturalidad y algo de humor, sin fórmulas de cortesía y sin palabras de comunicado». Lo que la hace parecer una persona es lo que alguien le pidió."
+    tipo: "consigna"
   },
   {
     situacion: "Te llega un correo que empieza por «Según lo hablado» y no recuerdas haber hablado nada. Contesta.",
     persona: "Muchas gracias por su email, le agradeceríamos si pudiese concretar con quien estuvo en contacto, pues no nos consta en nuestros archivos ninguna conversación previa.",
     maquina: "Perfecto, gracias. Para no equivocarme, ¿me recuerdas en dos líneas en qué quedamos? Últimamente hablo con demasiada gente.",
-    explicacion: "La otra la escribió una IA con esta instrucción: «responde como una persona real de España, en una o dos frases, con naturalidad y algo de humor, sin fórmulas de cortesía y sin palabras de comunicado». Lo que la hace parecer una persona es lo que alguien le pidió."
+    tipo: "consigna"
   },
   {
     situacion: "Un alumno explica por qué no ha entregado el trabajo.",
     persona: "No he podido entregar el trabajo porque se fue la luz y solo tenia una copia en el ordenador.",
     maquina: "Lo tenía terminado, pero el ordenador decidió actualizarse justo anoche y esta mañana ya no era el mismo. Ni él ni yo.",
-    explicacion: "La otra la escribió una IA con esta instrucción: «responde como una persona real de España, en una o dos frases, con naturalidad y algo de humor, sin fórmulas de cortesía y sin palabras de comunicado». Lo que la hace parecer una persona es lo que alguien le pidió."
+    tipo: "consigna"
   },
   {
     situacion: "Cuarto aviso a un cliente de que sigue faltando un documento.",
     persona: "Nos ponemos en contacto con usted porque estábamos revisando la documentación para presentar mañana que termina el plazo y no nos consta que nos enviase el documento ya solicitado el pasado 1 de noviembre, le rogamos nos lo envíe lo antes posible.",
     maquina: "Estimado cliente: le recordamos que seguimos a la espera de la documentación solicitada. Le agradeceríamos que nos la hiciera llegar a la mayor brevedad posible para poder continuar con la tramitación de su expediente. Quedamos a su disposición.",
-    explicacion: "La otra la escribió una IA sin ninguna instrucción: frases largas, tono de comunicado y ni una palabra que se diría en voz alta."
+    tipo: "fabrica"
   },
   {
     situacion: "En una entrevista: «¿Por qué quieres trabajar con nosotros?».",
     persona: "El sector de la moda siempre me ha interesado y ha sido una pasión para mí, creo que en esta empresa tan reputada además de trabajar en lo que más me apasiona tendría grandes oportunidades para aplicar mis conocimientos y crecer.",
     maquina: "Porque llevo meses viendo lo que hacéis y cada vez pienso lo mismo: ahí me habría gustado estar a mí.",
-    explicacion: "La otra la escribió una IA con esta instrucción: «responde como una persona real de España, en una o dos frases, con naturalidad y algo de humor, sin fórmulas de cortesía y sin palabras de comunicado». Lo que la hace parecer una persona es lo que alguien le pidió."
+    tipo: "consigna"
   },
   {
     situacion: "Reseña de una estrella a un hotel de playa: «Había peces en el mar y asustaron a mis hijos». Responde como el hotel.",
     persona: "Estimado cliente, lo primero agradecerle su tiempo en valorar nuestro hotel, la zona de playa está fuera de nuestro alcance, sin embargo hemos revisado las diez piscinas que nuestros estimados clientes pueden disfrutar en nuestro hotel y le confirmamos que cumplen con todas las medidas que regula la legislación. Esperamos que pese al percance haya disfrutados de nuestros 1.000 metros cuadrados que disponen tanto de las piscinas mencionadas como de 8 restaurantes temáticos y instalaciones deportivas donde se incluyen campo de golf, pistas de tenis y padel y las dos fantásticas embarcaciones dedicadas en exclusividad para nuestros clientes.",
     maquina: "Estimado huésped: lamentamos sinceramente que su experiencia no haya estado a la altura de sus expectativas. Le informamos de que la presencia de fauna marina es habitual en el entorno natural del establecimiento. Trasladaremos sus comentarios al equipo.",
-    explicacion: "La otra la escribió una IA sin ninguna instrucción: frases largas, tono de comunicado y ni una palabra que se diría en voz alta."
+    tipo: "fabrica"
   },
   {
     situacion: "Reseña de una estrella a un hotel en España: «Había demasiados españoles. El recepcionista hablaba español y la comida era española». Responde como el hotel.",
     persona: "Estimado cliente: Gracias por compartir su opinión sobre nuestro Hotel. Tomamos nota de sus comentarios. Nos alegra que el trato del personal y otros servicios hayan sido de su agrado. Saludos cordiales.",
     maquina: "Tiene usted toda la razón y pedimos disculpas: llevamos años intentando solucionarlo, pero siguen viniendo. La próxima vez le avisamos antes de que cruce la frontera.",
-    explicacion: "La otra la escribió una IA con esta instrucción: «responde como una persona real de España, en una o dos frases, con naturalidad y algo de humor, sin fórmulas de cortesía y sin palabras de comunicado». Lo que la hace parecer una persona es lo que alguien le pidió."
+    tipo: "consigna"
   }
 ];
 
 /* ============================================================
    A PARTIR DE AQUÍ, EL FUNCIONAMIENTO DEL JUEGO.
    ============================================================ */
+const LISTON = 30; /* Turing: que la máquina engañe al menos 3 de cada 10 veces */
 let orden = [];
 let actual = 0;
 let aciertos = 0;
@@ -146,72 +196,111 @@ function barajar(lista) {
   return copia;
 }
 
-function texto(etiqueta, clase, contenido) {
+function crea(etiqueta, clase, contenido) {
   const e = document.createElement(etiqueta);
   if (clase) e.className = clase;
-  e.textContent = contenido;
+  if (contenido !== undefined) e.textContent = contenido;
   return e;
 }
 
-function empezar() {
-  const listos = CASOS.filter(function (c) { return c.persona.indexOf(PENDIENTE) === -1; });
+function casosListos() {
+  return CASOS.filter(function (c) { return c.persona.indexOf(PENDIENTE) === -1; });
+}
+
+function portada() {
   zona.innerHTML = "";
+  const listos = casosListos();
+  const t = crea("div", "tarjeta centro");
   if (listos.length === 0) {
-    const aviso = document.createElement("div");
-    aviso.className = "tarjeta";
-    aviso.appendChild(texto("p", "", "Todavía no hay ningún caso con respuesta de persona. Escribe al menos una en la lista de casos y vuelve a cargar la página."));
-    zona.appendChild(aviso);
+    t.appendChild(crea("p", "", "Todavía no hay ningún caso con respuesta de persona. Escribe al menos una en la lista de casos y vuelve a cargar la página."));
+    zona.appendChild(t);
     return;
   }
-  orden = barajar(listos);
+  t.appendChild(crea("p", "etiqueta", "Cómo se juega"));
+  const reglas = crea("div", "reglas");
+  [["1", "Lees una situación y dos respuestas, A y B."],
+   ["2", "Pulsas la que crees que escribió una persona."],
+   ["3", "Al final sabrás si la máquina ha superado la prueba contigo."]].forEach(function (r) {
+    const d = crea("div", "regla");
+    d.appendChild(crea("b", "", r[0]));
+    d.appendChild(crea("span", "", r[1]));
+    reglas.appendChild(d);
+  });
+  t.appendChild(reglas);
+  const b = crea("button", "principal", "Empezar · " + listos.length + " casos");
+  b.onclick = empezar;
+  t.appendChild(b);
+  zona.appendChild(t);
+}
+
+function empezar() {
+  orden = barajar(casosListos());
   actual = 0;
   aciertos = 0;
   fallos = [];
   mostrarCaso();
 }
 
+function explicacion(caso) {
+  if (caso.tipo === "fabrica") {
+    return "La otra la escribió una IA sin ninguna instrucción. Así responde cuando nadie le dice cómo.";
+  }
+  return "La otra la escribió una IA con esta instrucción: «" + CONSIGNA + "». Lo que la hace parecer una persona es lo que alguien le pidió.";
+}
+
 function mostrarCaso() {
   const caso = orden[actual];
   zona.innerHTML = "";
-  zona.appendChild(texto("p", "progreso", "Caso " + (actual + 1) + " de " + orden.length + " · Aciertos: " + aciertos));
-  const tarjeta = document.createElement("div");
-  tarjeta.className = "tarjeta";
-  tarjeta.appendChild(texto("p", "etiqueta", "Situación"));
-  tarjeta.appendChild(texto("p", "situacion", caso.situacion));
-  tarjeta.appendChild(texto("p", "etiqueta", "¿Cuál escribió una persona?"));
+  const marcador = crea("div", "marcador");
+  marcador.appendChild(crea("span", "", "Caso " + (actual + 1) + " de " + orden.length));
+  const pista = crea("div", "pista");
+  const avance = crea("div", "avance");
+  avance.style.width = Math.round((actual / orden.length) * 100) + "%";
+  pista.appendChild(avance);
+  marcador.appendChild(pista);
+  const puntos = crea("span", "puntos");
+  const cifraPuntos = crea("b", "", String(aciertos));
+  puntos.appendChild(cifraPuntos);
+  puntos.appendChild(crea("span", "", " aciertos"));
+  marcador.appendChild(puntos);
+  zona.appendChild(marcador);
+
+  const tarjeta = crea("div", "tarjeta");
+  tarjeta.appendChild(crea("p", "etiqueta", "Situación"));
+  tarjeta.appendChild(crea("p", "situacion", caso.situacion));
+  tarjeta.appendChild(crea("p", "etiqueta", "¿Cuál escribió una persona?"));
   const opciones = barajar([
     { autor: "persona", respuesta: caso.persona },
     { autor: "maquina", respuesta: caso.maquina }
   ]);
   const botones = [];
   opciones.forEach(function (opcion, i) {
-    const b = document.createElement("button");
-    b.className = "opcion";
-    b.appendChild(texto("span", "letra", i === 0 ? "RESPUESTA A" : "RESPUESTA B"));
-    b.appendChild(texto("span", "", opcion.respuesta));
-    b.onclick = function () { responder(opcion.autor, b, opciones, botones, tarjeta); };
+    const b = crea("button", "opcion");
+    b.appendChild(crea("span", "autor", opcion.autor === "persona" ? "Persona" : "Máquina"));
+    b.appendChild(crea("span", "letra", i === 0 ? "RESPUESTA A" : "RESPUESTA B"));
+    b.appendChild(crea("div", "", opcion.respuesta));
+    b.onclick = function () { responder(opcion.autor, b, opciones, botones, tarjeta, cifraPuntos, avance); };
     botones.push(b);
     tarjeta.appendChild(b);
   });
   zona.appendChild(tarjeta);
 }
 
-function responder(eleccion, pulsado, opciones, botones, tarjeta) {
+function responder(eleccion, pulsado, opciones, botones, tarjeta, cifraPuntos, avance) {
   const caso = orden[actual];
   const acierto = eleccion === "persona";
   if (acierto) { aciertos++; } else { fallos.push(caso); }
+  cifraPuntos.textContent = String(aciertos);
+  avance.style.width = Math.round(((actual + 1) / orden.length) * 100) + "%";
   botones.forEach(function (b, i) {
     b.disabled = true;
-    if (opciones[i].autor === "persona") { b.className = "opcion persona"; }
+    b.className = "opcion " + opciones[i].autor + (b === pulsado ? " elegida" : "");
   });
-  pulsado.className = pulsado.className + " elegida";
-  const caja = document.createElement("div");
-  caja.className = "resultado";
-  caja.appendChild(texto("strong", "", acierto ? "Has acertado: esa es la de la persona." : "Esa era la de la máquina. La de la persona es la que queda marcada."));
-  caja.appendChild(texto("span", "", caso.explicacion));
+  const caja = crea("div", acierto ? "resultado" : "resultado fallo");
+  caja.appendChild(crea("strong", "", acierto ? "Has acertado." : "Te ha engañado la máquina."));
+  caja.appendChild(crea("span", "", explicacion(caso)));
   tarjeta.appendChild(caja);
-  const siguiente = texto("button", "principal", actual + 1 < orden.length ? "Siguiente" : "Ver resultado");
-  siguiente.style.marginTop = "16px";
+  const siguiente = crea("button", "principal", actual + 1 < orden.length ? "Siguiente" : "Ver el resultado");
   siguiente.onclick = function () {
     actual++;
     if (actual < orden.length) { mostrarCaso(); } else { mostrarFinal(); }
@@ -219,34 +308,90 @@ function responder(eleccion, pulsado, opciones, botones, tarjeta) {
   tarjeta.appendChild(siguiente);
 }
 
-function veredicto() {
-  const parte = aciertos / orden.length;
-  if (parte === 1) return "No hay máquina que te engañe. De momento.";
-  if (parte >= 0.75) return "Buen ojo. Alguna se te ha colado.";
-  if (parte >= 0.5) return "Mitad y mitad: lo mismo que tirando una moneda.";
-  return "Te han engañado más veces de las que has acertado. Tranquilidad, le pasa a casi todo el mundo.";
+function cuenta(tipo) {
+  const total = orden.filter(function (c) { return c.tipo === tipo; }).length;
+  const enganos = fallos.filter(function (c) { return c.tipo === tipo; }).length;
+  return { total: total, enganos: enganos };
 }
 
 function mostrarFinal() {
   zona.innerHTML = "";
-  const tarjeta = document.createElement("div");
-  tarjeta.className = "tarjeta";
-  tarjeta.appendChild(texto("p", "etiqueta", "Resultado"));
-  tarjeta.appendChild(texto("p", "final", aciertos + " de " + orden.length));
-  tarjeta.appendChild(texto("p", "", veredicto()));
-  if (fallos.length > 0) {
-    tarjeta.appendChild(texto("p", "", "Tomaste por persona a la máquina en estas respuestas:"));
-    const lista = document.createElement("ul");
-    fallos.forEach(function (c) { lista.appendChild(texto("li", "", "«" + c.maquina + "»")); });
-    tarjeta.appendChild(lista);
+  const total = orden.length;
+  const enganos = fallos.length;
+  const porcentaje = Math.round((enganos / total) * 100);
+  const supera = porcentaje >= LISTON;
+
+  const t = crea("div", "tarjeta centro");
+  t.appendChild(crea("p", "etiqueta", "Tu resultado"));
+  const anillo = crea("div", "anillo");
+  const radio = 80;
+  const largo = 2 * Math.PI * radio;
+  anillo.innerHTML = '<svg viewBox="0 0 190 190"><circle class="base" cx="95" cy="95" r="80"></circle><circle class="valor" cx="95" cy="95" r="80"></circle></svg>';
+  const valor = anillo.querySelector ? anillo.querySelector(".valor") : null;
+  if (valor) {
+    valor.style.strokeDasharray = String(largo);
+    valor.style.strokeDashoffset = String(largo);
+    setTimeout(function () { valor.style.strokeDashoffset = String(largo * (1 - aciertos / total)); }, 60);
   }
-  const otra = texto("button", "principal", "Jugar otra vez");
-  otra.onclick = empezar;
-  tarjeta.appendChild(otra);
-  zona.appendChild(tarjeta);
+  const cifra = crea("div", "cifra");
+  cifra.appendChild(crea("b", "", aciertos + " de " + total));
+  cifra.appendChild(crea("span", "", "aciertos"));
+  anillo.appendChild(cifra);
+  t.appendChild(anillo);
+  t.appendChild(crea("p", "veredicto", enganos === 0 ? "No hay máquina que te engañe. De momento." : "La máquina te ha engañado " + enganos + (enganos === 1 ? " vez." : " veces.")));
+
+  const f = cuenta("fabrica");
+  const c = cuenta("consigna");
+  const dos = crea("div", "dos");
+  [[f, "veces te engañó sin instrucciones"], [c, "veces te engañó con una consigna"]].forEach(function (par) {
+    if (par[0].total === 0) return;
+    const d = crea("div", "dato");
+    d.appendChild(crea("b", "", par[0].enganos + " de " + par[0].total));
+    d.appendChild(crea("span", "", par[1]));
+    dos.appendChild(d);
+  });
+  t.appendChild(dos);
+  zona.appendChild(t);
+
+  const tu = crea("div", "tarjeta turing");
+  tu.appendChild(crea("p", "etiqueta", "El test de Turing"));
+  tu.appendChild(crea("h2", "", supera ? "Contigo, la máquina lo habría superado" : "Contigo, la máquina no lo habría superado"));
+  const escala = crea("div", "escala");
+  const barra = crea("div", "barra");
+  barra.appendChild(crea("div", "liston"));
+  const punto = crea("div", "tu");
+  punto.style.left = "0%";
+  setTimeout(function () { punto.style.left = Math.min(porcentaje, 100) + "%"; }, 60);
+  barra.appendChild(punto);
+  escala.appendChild(barra);
+  const pies = crea("div", "pies");
+  pies.appendChild(crea("span", "", "0 %"));
+  pies.appendChild(crea("span", "", "Listón de Turing: 30 %"));
+  pies.appendChild(crea("span", "", "100 %"));
+  escala.appendChild(pies);
+  tu.appendChild(escala);
+  tu.appendChild(crea("p", "sentencia", "Te ha engañado en el " + porcentaje + " % de los casos. " + (supera
+    ? "Turing puso el listón en tres de cada diez. Lo ha pasado."
+    : "Turing puso el listón en tres de cada diez. Se ha quedado por debajo.")));
+
+  tu.appendChild(crea("p", "", "¿Qué significa superarlo? En 1950, Alan Turing propuso cambiar la pregunta «¿puede pensar una máquina?» por una prueba: alguien conversa por escrito con una persona y con una máquina, sin verlas, y tiene que decir quién es quién. Su previsión fue que, unos cincuenta años después, quien pregunta acertaría como mucho siete de cada diez veces tras cinco minutos de conversación. Es decir, que la máquina engañaría al menos tres de cada diez."));
+  tu.appendChild(crea("p", "", "Tres cosas que conviene tener claras:"));
+  const lista = crea("ul", "lista");
+  ["Superar la prueba significa que no la distinguimos de una persona por escrito. Mide lo bien que imita y lo fácil que es engañarnos. No demuestra que piense ni que sienta.",
+   "Este juego es una versión reducida. En la prueba de Turing puedes preguntar lo que quieras durante cinco minutos; aquí solo has leído una respuesta de cada una.",
+   "Fíjate en la diferencia entre las dos cifras de arriba. Sin instrucciones se la reconoce casi siempre. Lo que la hace pasar por persona es lo que alguien le pide."].forEach(function (x) {
+    lista.appendChild(crea("li", "", x));
+  });
+  tu.appendChild(lista);
+  const otra = crea("button", "principal", "Jugar otra vez");
+  otra.onclick = portada;
+  const pie = crea("div", "centro");
+  pie.appendChild(otra);
+  tu.appendChild(pie);
+  zona.appendChild(tu);
 }
 
-empezar();
+portada();
 </script>
 </body>
 </html>
